@@ -3,6 +3,11 @@ import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import styles from './HomepageFeatures.module.css';
 
+if (process.env.NODE_ENV !== 'production') {
+    const axe = require('@axe-core/react');
+    axe(React, 1000); // Initialize axe-core
+}
+
 const FeatureList = [
   {
     title: 'Multi-Agent Conversation Framework',
