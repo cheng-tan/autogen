@@ -1,3 +1,5 @@
 /autogen[websurfer]
 beartype
 aiolimiter
+-r /screenparsing/requirements.txt
+/screenparsing

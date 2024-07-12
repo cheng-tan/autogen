@@ -376,6 +376,7 @@ echo RUN.SH COMPLETE !#!#
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
         )
+
         for c in iter(lambda: process.stdout.read(1), b""):
             f.write(c)
             os.write(sys.stdout.fileno(), c)  # Write binary to stdout
@@ -445,6 +446,25 @@ fi
 
 # Run the scenario
 pip install -r requirements.txt
+
+cd ../screenparsing/screenparsing/screenparsing/ocr/model
+
+apt-get update && \
+    apt-get install -y sudo liblzma5 dpkg && \
+    apt-get clean
+
+sudo dpkg -i oneocr-vcpkg_2.4.1-0_amd64.deb
+# dpkg -i oneocr-8.2.82-Linux-Main.deb
+# dpkg-deb -x oneocr-8.2.82-Linux-Main.deb oneocr-8.2.82-Linux-Main
+
+echo LISTING MODEL DIR
+ls
+
+echo LISTING ONEOCR
+ls ./oneocr-8.2.82-Linux-Main
+
+cd /workspace
+
 echo SCENARIO.PY STARTING !#!#
 timeout --preserve-status --kill-after {timeout  + 30}s {timeout}s python scenario.py
 EXIT_CODE=$?
@@ -489,6 +509,17 @@ echo RUN.SH COMPLETE !#!#
 
     if autogen_repo_base is not None:
         volumes[str(pathlib.Path(autogen_repo_base).absolute())] = {"bind": "/autogen", "mode": "rw"}
+
+    # screenparsing repo needs to be a sibling repo of autogen repo
+    parent_dir = pathlib.Path(autogen_repo_base).resolve().parent
+    screenparsing_dir_name="screenparsing"
+    screenparsing_dir = parent_dir/screenparsing_dir_name # TODO: verify if a file in screenparsing module exists
+
+    if not os.path.isdir(screenparsing_dir):
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), screenparsing_dir)
+
+    if screenparsing_dir is not None:
+        volumes[str(pathlib.Path(screenparsing_dir).absolute())] = {"bind": "/screenparsing", "mode": "rw"}
 
     print("Mounting:")
     for k in volumes:

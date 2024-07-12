@@ -37,6 +37,7 @@ from .tool_definitions import (
     TOOL_READ_PAGE_AND_ANSWER,
     TOOL_SLEEP,
 )
+from screenparsing.screenparsing.parser import ScreenParser
 
 try:
     from termcolor import colored
@@ -120,6 +121,10 @@ class MultimodalWebSurferAgent(ConversableAgent):
             llm_config=llm_config,
             default_auto_reply=default_auto_reply,
         )
+
+        print("=======SCREEN PARSER=======")
+        sp = ScreenParser()
+        print(sp)
 
         self.start_page = start_page or self.DEFAULT_START_PAGE
         self.debug_dir = debug_dir or os.getcwd()
